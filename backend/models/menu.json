@@ -1,0 +1,75 @@
+{
+  "appetizers": [
+    {
+      "name": "Bruschetta",
+      "price": 8.99,
+      "description": "Toasted bread topped with tomatoes, garlic, and basil"
+    },
+    {
+      "name": "Mozzarella Sticks",
+      "price": 7.99,
+      "description": "Crispy fried mozzarella served with marinara sauce"
+    },
+    {
+      "name": "Caesar Salad",
+      "price": 9.99,
+      "description": "Romaine lettuce with parmesan, croutons, and Caesar dressing"
+    }
+  ],
+  "main_courses": [
+    {
+      "name": "Margherita Pizza",
+      "price": 14.99,
+      "description": "Classic pizza with tomato sauce, mozzarella, and fresh basil"
+    },
+    {
+      "name": "Spaghetti Carbonara",
+      "price": 16.99,
+      "description": "Pasta with eggs, bacon, parmesan cheese, and black pepper"
+    },
+    {
+      "name": "Grilled Salmon",
+      "price": 22.99,
+      "description": "Fresh salmon fillet with lemon butter sauce and vegetables"
+    },
+    {
+      "name": "Chicken Parmesan",
+      "price": 18.99,
+      "description": "Breaded chicken breast with marinara and melted mozzarella"
+    }
+  ],
+  "desserts": [
+    {
+      "name": "Tiramisu",
+      "price": 7.99,
+      "description": "Classic Italian dessert with coffee-soaked ladyfingers and mascarpone"
+    },
+    {
+      "name": "Chocolate Lava Cake",
+      "price": 8.99,
+      "description": "Warm chocolate cake with a molten center, served with vanilla ice cream"
+    },
+    {
+      "name": "Panna Cotta",
+      "price": 6.99,
+      "description": "Italian vanilla custard with berry compote"
+    }
+  ],
+  "beverages": [
+    {
+      "name": "Soft Drinks",
+      "price": 2.99,
+      "description": "Coke, Sprite, Fanta, or Diet Coke"
+    },
+    {
+      "name": "Fresh Lemonade",
+      "price": 3.99,
+      "description": "House-made fresh lemonade"
+    },
+    {
+      "name": "Iced Tea",
+      "price": 2.99,
+      "description": "Sweetened or unsweetened"
+    }
+  ]
+}
