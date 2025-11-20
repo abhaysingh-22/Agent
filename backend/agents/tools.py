@@ -23,17 +23,37 @@ def lookup_menu(category: str = None) -> str:
         from utils.sheets_db import get_sheets_db
         
         db = get_sheets_db()
-        worksheet = db.spreadsheet.worksheet('Stocks')
+        
+        # Try to get Menu worksheet, fallback to Stocks if Menu doesn't exist
+        try:
+            worksheet = db.spreadsheet.worksheet('Menu')
+        except:
+            worksheet = db.spreadsheet.worksheet('Stocks')
+        
         records = worksheet.get_all_records()
         
         if not records:
             return "Menu is currently unavailable. Please try again later."
         
+        # Debug: Print first record to see column names
+        if records:
+            print(f"DEBUG - Available columns: {list(records[0].keys())}")
+        
         # If no category specified, return all items
         result = "**Our Menu:**\n\n"
         for item in records:
-            dish_name = item.get('Dish Name', 'Unknown')
-            price = item.get('Price (INR)', 0)
+            # Try different possible column names
+            dish_name = (item.get('Dish Name') or 
+                        item.get('Item Name') or 
+                        item.get('Name') or 
+                        item.get('Dish') or 
+                        'Unknown')
+            
+            price = (item.get('Price (INR)') or 
+                    item.get('Price') or 
+                    item.get('Rate') or 
+                    0)
+            
             result += f"- {dish_name}: ₹{price}\n"
         
         return result
@@ -68,7 +88,7 @@ def check_food_stock(item_name: Optional[str] = None) -> str:
         for stock in stocks:
             result += f"- {stock.get('Item Name', 'Unknown')}: "
             result += f"{stock.get('Quantity', 0)} {stock.get('Unit', 'units')} "
-            result += f"(${stock.get('Price', 0)} per {stock.get('Unit', 'unit')})\n"
+            result += f"(₹{stock.get('Price', 0)} per {stock.get('Unit', 'unit')})\n"
             result += f"  Category: {stock.get('Category', 'N/A')}\n"
         
         return result
@@ -109,7 +129,7 @@ def get_order_status(order_id: Optional[str] = None, status_filter: Optional[str
             result += f"- Order ID: {order.get('Order ID', 'N/A')}\n"
             result += f"  Customer: {order.get('Customer Name', 'N/A')}\n"
             result += f"  Items: {order.get('Items', 'N/A')}\n"
-            result += f"  Total: ${order.get('Total', 0)}\n"
+            result += f"  Total: ₹{order.get('Total', 0)}\n"
             result += f"  Status: {order.get('Status', 'N/A')}\n"
             result += f"  Time: {order.get('Timestamp', 'N/A')}\n\n"
         
@@ -139,7 +159,7 @@ def place_order(customer_name: str, items: str, total: float) -> str:
         success = db.add_order(customer_name, items, total)
         
         if success:
-            return f"✅ Order placed successfully!\n\nCustomer: {customer_name}\nItems: {items}\nTotal: ${total}\nStatus: Pending"
+            return f"✅ Order placed successfully!\n\nCustomer: {customer_name}\nItems: {items}\nTotal: ₹{total}\nStatus: Pending"
         else:
             return "❌ Failed to place order. Please try again."
         
