@@ -22,7 +22,11 @@ app = FastAPI(
 # Enable CORS for frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=[
+        "https://agent-lac.vercel.app",
+        "http://localhost:8000",
+        "*"  # Keep for testing, remove in production
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
