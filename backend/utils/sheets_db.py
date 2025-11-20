@@ -39,22 +39,50 @@ class GoogleSheetsDB:
                 'https://www.googleapis.com/auth/drive'
             ]
             
-            # Authenticate
-            credentials = ServiceAccountCredentials.from_json_keyfile_name(
-                str(self.credentials_path), scope
-            )
+            # Try to authenticate using environment variable first (for production)
+            google_credentials_json = os.getenv('GOOGLE_CREDENTIALS_JSON')
+            
+            if google_credentials_json:
+                # Use credentials from environment variable
+                import json
+                credentials_dict = json.loads(google_credentials_json)
+                credentials = ServiceAccountCredentials.from_json_keyfile_dict(
+                    credentials_dict, scope
+                )
+                print("✅ Using credentials from environment variable")
+            else:
+                # Fallback to credentials file (for local development)
+                if not os.path.exists(str(self.credentials_path)):
+                    raise FileNotFoundError(
+                        f"Credentials file not found at {self.credentials_path}. "
+                        "Please set GOOGLE_CREDENTIALS_JSON environment variable or "
+                        "provide credentials.json file."
+                    )
+                credentials = ServiceAccountCredentials.from_json_keyfile_name(
+                    str(self.credentials_path), scope
+                )
+                print("✅ Using credentials from file")
+            
             self.client = gspread.authorize(credentials)
+            
+            # Verify Sheet ID exists
+            if not self.sheet_id:
+                raise ValueError("GOOGLE_SHEET_ID environment variable is not set")
             
             # Open the spreadsheet
             self.spreadsheet = self.client.open_by_key(self.sheet_id)
-            print("✅ Successfully connected to Google Sheets!")
+            print(f"✅ Successfully connected to Google Sheets! (Sheet ID: {self.sheet_id})")
             
-        except FileNotFoundError:
-            print(f"❌ Credentials file not found: {self.credentials_path}")
-            print("Please follow GOOGLE_SHEETS_SETUP.md to set up credentials.")
+        except FileNotFoundError as e:
+            print(f"❌ Credentials file not found: {str(e)}")
+            raise
+        except ValueError as e:
+            print(f"❌ Configuration error: {str(e)}")
             raise
         except Exception as e:
             print(f"❌ Failed to connect to Google Sheets: {str(e)}")
+            print(f"   Sheet ID: {self.sheet_id}")
+            print(f"   Credentials path: {self.credentials_path}")
             raise
     
     def get_food_stocks(self, item_name: Optional[str] = None) -> List[Dict]:

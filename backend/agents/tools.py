@@ -82,7 +82,7 @@ def check_food_stock(item_name: Optional[str] = None) -> str:
         if not stocks:
             if item_name:
                 return f"No stock information found for '{item_name}'."
-            return "No stock information available."
+            return "Stock information is currently unavailable. Please contact the restaurant."
         
         result = "**Current Food Stocks:**\n\n"
         for stock in stocks:
@@ -94,7 +94,13 @@ def check_food_stock(item_name: Optional[str] = None) -> str:
         return result
         
     except Exception as e:
-        return f"Unable to fetch stock information. Error: {str(e)}"
+        error_msg = str(e)
+        print(f"ERROR in check_food_stock: {error_msg}")
+        if "credentials" in error_msg.lower():
+            return "Unable to access stock database. Google Sheets credentials are not configured properly."
+        elif "sheet" in error_msg.lower():
+            return "Unable to access stock information. The Stocks worksheet may be missing."
+        return f"Unable to fetch stock information. Error: {error_msg}"
 
 
 @tool
